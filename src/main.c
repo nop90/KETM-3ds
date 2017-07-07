@@ -41,10 +41,10 @@ void readModDirs( ) {
   }
   closedir(dp);
 */
-    strcpy(mods[0],"_KETM-episode1");
-    strcpy(mods[1],"_1941");
-	strcpy(mods[2],"_Star-wars");
-    strcpy(mods[3],"_KETM-Iron_Man");
+    strcpy(mods[0],"KETM-episode1");
+    strcpy(mods[1],"1941");
+	strcpy(mods[2],"Star Wars");
+    strcpy(mods[3],"Iron Man");
     modcount=4;
 }
 
