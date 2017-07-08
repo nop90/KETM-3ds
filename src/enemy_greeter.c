@@ -49,7 +49,7 @@ void enemy_greeter_add(int lv)
 		data->level=lv;
 	}
 	last=~last;
-		
+
 }
 
 void enemy_greeter_controller(CONTROLLER *c)
@@ -59,7 +59,7 @@ void enemy_greeter_controller(CONTROLLER *c)
 	SPRITE *s;
 	int invisible=0;
 	static int bonus=SP_BONUS_ADDSPEED;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -74,7 +74,7 @@ void enemy_greeter_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -93,7 +93,7 @@ void enemy_greeter_controller(CONTROLLER *c)
 void enemy_greeter_move(SPRITE *s)
 {
 	GREETER_DATA *d=(GREETER_DATA *)s->data;
-	
+
 	switch(d->state) {
 	case 0:	/* nach unten */
 		if(s->y>=d->max_y) {
@@ -104,7 +104,7 @@ void enemy_greeter_move(SPRITE *s)
 		if(d->level)
 			if(rand()%(100-d->level*10)==0)
 				enemy_bullet_create(s,3+d->level);
-				
+
 		break;
 	case 1:
 		if(s->y<-s->h) {

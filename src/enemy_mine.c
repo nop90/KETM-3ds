@@ -1,6 +1,10 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 typedef struct {
 	ENEMY_BASE b;
@@ -37,7 +41,11 @@ void enemy_mine_add(int lv)
 void enemy_mine_move(SPRITE *s)
 {
 	MINE_DATA *d=(MINE_DATA *)s->data;
+	#ifdef GP2X
+	float angle;
+	#else
 	double angle;
+	#endif
 
 	switch(d->state) {
 		case 0: /* move */

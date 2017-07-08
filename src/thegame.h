@@ -14,8 +14,10 @@
 #include "score.h"
 #include "bg.h"
 #include "loadlv.h"
+#include "soundmanager.h" //added by Farox
 
 void thegame_init();
 void thegame_work();
 void thegame_level();
+void adjust_start_time(Uint32 pause_time);//added by Farox
 #endif

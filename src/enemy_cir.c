@@ -77,7 +77,11 @@ void enemy_cir_move(SPRITE *s)
 			}
 			break;
 		case 4: /* down */
+		    #ifdef GP2X
+		    if(s->y>240) // Farox
+		    #else
 			if(s->y>272) //denis 480
+			#endif
 				s->type=-1;
 			break;
 	}

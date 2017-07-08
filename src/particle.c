@@ -15,8 +15,10 @@ extern double fps_factor;
    tx:		Effekt (EXPLODE, LINESPLIT, PIXELATE, evtl. or mit DIFFSIZE)
    msg:		NULL oder pointer auf int, wird auf 0 gesetzt wenn explosion beendet
 */
+
 void parsys_add(SDL_Surface *src, int xs, int ys, int xp, int yp, int maxspeed, int gangle, double gspeed, int ttl, int fx, int *msg)
-{ /* 
+
+{ /*
 	PARSYS *ps,*pl=parsys;
 	SDL_Surface *t;
 	SDL_Rect d;
@@ -73,9 +75,9 @@ void parsys_add(SDL_Surface *src, int xs, int ys, int xp, int yp, int maxspeed, 
 		}
 		return;
 	}
-	
 
-		
+
+
 	ps=mmalloc(sizeof(PARSYS));
 	ps->x_size=xs;
 	ps->y_size=ys;
@@ -92,7 +94,7 @@ void parsys_add(SDL_Surface *src, int xs, int ys, int xp, int yp, int maxspeed, 
 	ps->next=NULL;
 
 	if(ps->msg!=NULL) *(ps->msg)=1;
-	
+
 	if(parsys==NULL) {
 		parsys=ps;
 	} else {
@@ -130,7 +132,7 @@ void parsys_display()
 			}
 			prev=p;
 		}
-		
+
 		p=next;
 	}
 */
@@ -155,14 +157,21 @@ void parsys_remove_all()
 	}
 */
 }
-	
 
+#ifdef GP2X
+PAR *particle_init(SDL_Surface *src,int xs,int ys, int xp, int yp, int maxspeed, int gangle, float gspeed, int ttl, int fx)
+#else
 PAR *particle_init(SDL_Surface *src,int xs,int ys, int xp, int yp, int maxspeed, int gangle, double gspeed, int ttl, int fx)
+#endif
 {
 	PAR *first=NULL,*akt=NULL,*last=NULL;
 	int i,j;
 	SDL_Rect r;
+	#ifdef GP2X
+	float angle, speed;
+	#else
 	double angle, speed;
+	#endif
 	Uint32 key;
 	Uint32 color;
 
@@ -237,7 +246,12 @@ PAR *particle_init(SDL_Surface *src,int xs,int ys, int xp, int yp, int maxspeed,
 					}
 
 					akt->ttl=(rand()%ttl)+1;
+					//akt->img=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_HWSURFACE,xs,ys,
+					#ifdef GP2X
+					akt->img=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_SWSURFACE,xs,ys,
+					#else
 					akt->img=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_HWSURFACE,xs,ys,
+					#endif
 						src->format->BitsPerPixel,
 						src->format->Rmask,
 						src->format->Gmask,
@@ -247,7 +261,7 @@ PAR *particle_init(SDL_Surface *src,int xs,int ys, int xp, int yp, int maxspeed,
 						CHECKPOINT;
 						error(ERR_FATAL,"cant create SDL_Surface: %s",SDL_GetError());
 					}
-					
+
 					SDL_SetColorKey(akt->img,SDL_SRCCOLORKEY|SDL_RLEACCEL,0x00000000);
 					r.w=xs;
 					r.h=ys;

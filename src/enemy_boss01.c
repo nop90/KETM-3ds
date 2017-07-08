@@ -2,7 +2,11 @@
 
 SPRITE *sb01[6];
 extern SPRITE *player;
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SDL_Surface *screen;
 
 typedef struct _boss01_data {
@@ -101,13 +105,13 @@ void enemy_boss01_hitbyweapon(SPRITE *c, SPRITE *s, int angle)
 				i=5;
 			break;
 	}
-	
+
 	b=(BOSS01_DATA *)sb01[i]->data;
 	b->b.health-=w->strength;
 
 	explosion_add(s->x,s->y,0,rand()%3+1);
 	//parsys_add(NULL,100,0,s->x,s->y,30,0,0,50,PIXELATE,NULL);
-	
+
 
 	if((b->b.health<=15)&&(b->health_flag==0)) {
 		b->health_flag=1;
@@ -140,9 +144,15 @@ void enemy_boss01_hitbyweapon(SPRITE *c, SPRITE *s, int angle)
 void enemy_boss01_move(SPRITE *c)
 {
 	BOSS01_DATA *b=(BOSS01_DATA *)c->data;
+	#ifdef GP2X
+	static float x,y;
+	static float w;
+	static float firewait1;
+	#else
 	static double x,y;
 	static double w;
 	static double firewait1;
+	#endif
 	static int firewait2;
 
 	switch(b->state) {

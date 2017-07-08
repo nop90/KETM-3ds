@@ -1,7 +1,11 @@
 #include "enemy.h"
 
 extern SPRITE *player;
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 typedef struct {
 	ENEMY_BASE b;
@@ -43,10 +47,15 @@ void enemy_xev_add(int lv)
 
 void enemy_xev_move(SPRITE *s)
 {
+	#ifdef GP2X
+	float angle;
+	float speed=0;
+	#else
 	double angle;
 	double speed=0;
+	#endif
 	XEV_DATA *d=(XEV_DATA *)s->data;
-	
+
 	switch(d->state) {
 		case 0:
 			speed=3;
@@ -59,7 +68,7 @@ void enemy_xev_move(SPRITE *s)
 					enemy_bullet_create(s,1+d->level);
 				bonus_add(s->x,s->y,rand()%(SP_BONUS_LAST-SP_BONUS_FIREPOWER)+SP_BONUS_FIREPOWER);
 			}
-			
+
 		case 1:
 			speed=6;
 			if(s->x <= -s->w) {

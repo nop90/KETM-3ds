@@ -1,15 +1,27 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SPRITE *player;
 
 typedef struct {
 	ENEMY_BASE b;
+	#ifdef GP2X
+	float angle;
+	float speed;
+	float turnspeed;
+	float left;
+	float right;
+	#else
 	double angle;
 	double speed;
 	double turnspeed;
 	double left;
 	double right;
+	#endif
 	int state;
 	int level;
 } CURVER_DATA;
@@ -57,7 +69,7 @@ void enemy_curver_controller(CONTROLLER *c)
 	int *id_array=c->e;
 	SPRITE *s;
 	int invisible=0;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -72,7 +84,7 @@ void enemy_curver_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -101,7 +113,7 @@ void enemy_curver_move(SPRITE *s)
 				d->state=2;
 				if(d->level>0)
 					enemy_bullet_create(s,3+d->level);
-					
+
 			}
 			break;
 		case 2:

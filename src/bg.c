@@ -1,10 +1,13 @@
 #include "bg.h"
 
+
 extern double fps_factor;
+
 extern SDL_Surface *screen;
 
 int akt_bgtype;
 double bg_alpha;
+
 
 /* clouds */
 SPRITE *w1[5];
@@ -13,6 +16,7 @@ SPRITE *w3[20];
 
 /* tile */
 SDL_Surface *btile=NULL;
+
 double btile_y;
 
 void bg_init(int bg_type,int lev)
@@ -41,7 +45,7 @@ void bg_init(int bg_type,int lev)
 		tile_init(lev);
 		break;
 	}
-	
+
 }
 
 void bg_work()
@@ -79,7 +83,7 @@ void bg_work()
 		tile_display();
 		break;
 	}
-	
+
 }
 
 void bg_destroy()
@@ -128,7 +132,11 @@ void clouds_init(int lev)
 		w3[i]->data=d;
 		w3[i]->alpha=bg_alpha;
 		d->speed_base=1;
+		#ifdef GP2X
+		d->speed_rand=(float)(rand()%100)/100;
+		#else
 		d->speed_rand=(double)(rand()%100)/100;
+		#endif
 	}
 
 	sprintf(filename,"wolke02_%d.png",lev);
@@ -144,7 +152,11 @@ void clouds_init(int lev)
 		w2[i]->data=d;
 		w2[i]->alpha=bg_alpha;
 		d->speed_base=2;
+		#ifdef GP2X
+		d->speed_rand=(float)(rand()%100)/100;
+		#else
 		d->speed_rand=(double)(rand()%100)/100;
+		#endif
 	}
 
 	sprintf(filename,"wolke01_%d.png",lev);
@@ -160,9 +172,13 @@ void clouds_init(int lev)
 		w1[i]->data=d;
 		w1[i]->alpha=bg_alpha;
 		d->speed_base=3;
+		#ifdef GP2X
+		d->speed_rand=(float)(rand()%100)/100;
+		#else
 		d->speed_rand=(double)(rand()%100)/100;
+		#endif
 	}
-	
+
 }
 
 void clouds_remove()
@@ -184,7 +200,11 @@ void clouds_mover(SPRITE *c)
 	c->y+=d->speed_rand*fps_factor;
 	if(c->y>HEIGHT) {
 		c->y-=HEIGHT+c->w;
+		#ifdef GP2X
+		d->speed_rand=(float)(rand()%100)/100;
+		#else
 		d->speed_rand=(double)(rand()%100)/100;
+		#endif
 		c->x=rand()%WIDTH-c->w;
 		//c->alpha=bg_alpha;
 		c->alpha=200;
@@ -216,7 +236,7 @@ void tile_display()
 	if(bg_alpha<255) {
 	 	SDL_FillRect(screen,NULL,SDL_MapRGB(screen->format,0,0,0));
 		SDL_SetAlpha(btile,SDL_SRCALPHA,bg_alpha);
-	} else 
+	} else
 		SDL_SetAlpha(btile,SDL_SRCALPHA,255);
 
 	r.w=btile->w;
@@ -231,7 +251,7 @@ void tile_display()
 }
 
 void tile_remove()
-{ 
+{
 	if(btile!=NULL)
 		unloadbmp_by_surface(btile);
 	btile=NULL;

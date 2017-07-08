@@ -18,3 +18,7 @@ void pauseMusic();
 void resumeMusic();
 void playChunk(int idx);
 void setChunkVolume(int volume);
+////////////////added by Farox
+void GlobalVolumeUp();
+void GlobalVolumeDown();
+//////////////////////////////

@@ -30,9 +30,9 @@ void thegame_init()
 	level_start_time=SDL_GetTicks();
 
 	level=((PLAYER_DATA *)player->data)->level;
+
 	if(loadlv(level)==0)
 		error(ERR_WARN,"no entrys for level %d",level);
-
 }
 
 
@@ -61,28 +61,30 @@ void thegame_work()
 			}
 			l=l->next;
 		}
-		
+
 
 		if(((PLAYER_DATA *)player->data)->bossmode==2) {
+
 			((PLAYER_DATA *)player->data)->bossmode=0;
 			level_start_time=SDL_GetTicks();
 			(*level)++;
-			if(*level==4) {
-				error(ERR_DEBUG,"sorry, no more levels in this alpha-version");
-				d->lives=0;
-				return;
-			} else {
+			gt=(SDL_GetTicks()-level_start_time)/100; //denis
 			playChunk(3);
 			// change music soundtrack
 			sprintf(filename,"stage%d",*level);
 			playMusic(filename);
-			}
 			/* Load next level */
 			if(loadlv(*level)==0)
 				error(ERR_WARN,"no entrys for level %d",*level);
 		}
-			
-		
+
+		if(*level==5 && gt>605) {
+                       error(ERR_DEBUG,"sorry, no more levels in this alpha-version");
+			d->lives=0;
+                        return;
+		}
+
+
 		bg_work();
 		sprite_work(SP_SHOW_ALL);
 		sprite_display(SP_SHOW_ALL);
@@ -147,6 +149,8 @@ void thegame_level(LEVELENTRY *l, int lev)
 			enemy_ming_add(l->para2);
 		} else if(!strcmp(l->para1,"GREETER")) {
 			enemy_greeter_add(l->para2);
+		} else if(!strcmp(l->para1,"GROUNDER")) {
+			enemy_grounder_add(l->para2,'1');
 		} else if(!strcmp(l->para1,"CURVER")) {
 			enemy_curver_add(l->para2);
 		} else if(!strcmp(l->para1,"BOSS01")) {
@@ -183,9 +187,17 @@ void thegame_level(LEVELENTRY *l, int lev)
 			break;
 		}
 		break;
-			
+
 	default:
-		error(ERR_WARN,"unknown command '%c' in levelfile",l->command);
+		// add background tiles....
+		if(!strcmp(l->para1,"BGPANEL2")) {
+			enemy_bgpanel2_add(l->para2,l->command);
+		} else if(!strcmp(l->para1,"BGPANEL")) {
+			enemy_bgpanel_add(l->para2,l->command);
+		} else if(!strcmp(l->para1,"GROUNDER")) {
+			enemy_grounder_add(l->para2,l->command);
+		}else
+			error(ERR_WARN,"unknown command '%c' in levelfile",l->command);
 	}
 }
 

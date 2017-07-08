@@ -1,6 +1,7 @@
 #include "loadlv.h"
 
-//extern int errno;
+//#include <errno.h>
+
 
 LEVELENTRY *leveltab=NULL;
 
@@ -8,13 +9,13 @@ int loadlv(int level)
 {
 	int line_nr=0;
 	FILE *file;
-	char buffer[1024];
+	char buffer[128];
 	char *c;
 	int time;
 	char command;
-	char para1[1024];
-	int para2; 
-	char filename[1024];
+	char para1[128];
+	int para2;
+	char filename[128];
 	int entrys=0;
 
 	loadlv_freeentry();
@@ -24,7 +25,7 @@ int loadlv(int level)
 //		error(ERR_FATAL,"can't read levelfile %s\nerrno: %d (%s)",filename,errno,strerror(errno));
 		error(ERR_FATAL,"can't read levelfile %s\n",filename);
 	}
-		
+
 	while(fgets(buffer,1024,file)!=NULL) {
 
 		line_nr++;
@@ -55,7 +56,7 @@ int loadlv(int level)
 
 		/* Befehl */
 		command=*c++;
-		
+
 		if(*c++!='|') {
 			loadlv_serror(filename,line_nr);
 			continue;

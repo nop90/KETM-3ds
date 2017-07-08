@@ -1,6 +1,7 @@
 #ifndef _FPS_H_
 #define _FPS_H_
 
+//#include <SDL2/SDL.h>
 #include <SDL/SDL.h>
 
 #include "support.h"

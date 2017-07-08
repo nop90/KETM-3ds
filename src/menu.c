@@ -16,6 +16,7 @@ MENU pausemenu;
 MENU optionmenu;
 MENU volumemenu;
 MENU difficultymenu;
+MENU fpsmenu;//added by Farox
 
 Uint32 pause_start_time=0;
 
@@ -26,6 +27,7 @@ void menusystem_init()
 	optionmenu.active_item=0;
 	volumemenu.active_item=0;
 	difficultymenu.active_item=0;
+	fpsmenu.active_item=0;//added by Farox
 }
 
 void menu_init()
@@ -46,6 +48,9 @@ void menu_init()
 		case MEN_DIFF:
 			difficultymenu_init();
 			break;
+        case MEN_FPS: //added by Farox
+            fpsmenu_init();
+            break;
 	}
 }
 
@@ -68,10 +73,13 @@ void menu_work()
 		case MEN_DIFF:
 			difficultymenu_work();
 			break;
+        case MEN_FPS: //added by Farox
+            fpsmenu_work();
+            break;
 	}
 }
-	
-	
+
+
 void startmenu_init()
 {
 	char *options[]={"NEW GAME", "OPTIONS", "HIGH SCORES", "QUIT GAME", NULL};
@@ -146,15 +154,17 @@ void optionmenu_init()
 {
 	char *m00="FX VOLUME";
 	char *m01="DIFFICULTY";
-	char *m02="BACK TO MAIN MENU";
+	char *m02="SHOW FPS"; //added by Farox
+	char *m03="BACK TO MAIN MENU";
 
 	char *o[8];
 
 	o[0]=m00;
 	o[1]=m01;
 	o[2]=m02;
-	o[3]=NULL;
-	
+	o[3]=m03; //changed by farox
+	o[4]=NULL;
+
 	genericmenu_init(o,&optionmenu,0,-1);
 }
 
@@ -172,7 +182,10 @@ void optionmenu_work()
 			case 1:	/* difficulty */
 				newstate(ST_MENU,MEN_DIFF,1);
 				break;
-			case 2:	/* Back to Game */
+			case 2:	/* FPS on/off */
+				newstate(ST_MENU,MEN_FPS,1);
+				break;
+            case 3:	/* Back to Game */
 				newstate(ST_MENU,MEN_START,1);
 				break;
 		}
@@ -181,7 +194,7 @@ void optionmenu_work()
 
 void volumemenu_init()
 {
-	char *options[]={"0","1","2","3",NULL};
+	char *options[]={"0","1","2","3","4",NULL};
 	genericmenu_init(options,&volumemenu,0,-1);
 	volumemenu.active_item=volume;
 }
@@ -193,7 +206,7 @@ void volumemenu_work()
 	} else {
 		volumemenu.select_finish=0;
 		volume=volumemenu.active_item;
-		setChunkVolume(volume*40);
+		setChunkVolume(volume*30); //was 40 before...changed by Farox
 		newstate(ST_MENU,MEN_OPTION,1);
 	}
 }
@@ -216,7 +229,25 @@ void difficultymenu_work()
 	}
 }
 
+////////////////added by Farox
+void fpsmenu_init()
+{
+    char *options[]={"OFF", "ON",NULL};
+    genericmenu_init(options,&fpsmenu,0,-1);
+    fpsmenu.active_item=fps_display;
+}
 
+void fpsmenu_work()
+{
+    if(!fpsmenu.select_finish) {
+		genericmenu_work(&fpsmenu);
+	} else {
+		fpsmenu.select_finish=0;
+		fps_display=fpsmenu.active_item;
+		newstate(ST_MENU,MEN_OPTION,1);
+	}
+}
+////////////////////////////////////////
 
 void genericmenu_init(char *options[], MENU *m, int fadeout, int timeout)
 {
@@ -255,7 +286,12 @@ void genericmenu_init(char *options[], MENU *m, int fadeout, int timeout)
 		}
 	}
 
+	//m->bg=SDL_CreateRGBSurface(SDL_HWSURFACE,screen->w,screen->h,
+	#ifdef GP2X
+	m->bg=SDL_CreateRGBSurface(SDL_SWSURFACE,screen->w,screen->h,
+	#else
 	m->bg=SDL_CreateRGBSurface(SDL_HWSURFACE,screen->w,screen->h,
+	#endif
 		screen->format->BitsPerPixel,
 		screen->format->Rmask,
 		screen->format->Gmask,
@@ -275,7 +311,11 @@ void genericmenu_init(char *options[], MENU *m, int fadeout, int timeout)
 void genericmenu_work(MENU *m)
 {
 	static int w=10;
+	#ifdef GP2X
+	static float angle=0;
+	#else
 	static double angle=0;
+	#endif
 	int i,j;
 	MENU_DATA *d;
 
@@ -364,8 +404,12 @@ void genericmenu_work(MENU *m)
 			}
 			if(d->i3)
 				d->i3--;
+            #ifdef GP2X
+			m->opts[i][0]->x=d->i0+(cos(degtorad(angle))*(float)d->i2);
+			#else
 			m->opts[i][0]->x=d->i0+(cos(degtorad(angle))*(double)d->i2);
 			// m->opts[i][0]->y=d->i1+(sin(degtorad(angle))*(double)d->i2);
+			#endif
 			m->opts[i][0]->y=d->i1;
 
 

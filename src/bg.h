@@ -1,6 +1,7 @@
 #ifndef _BG_H_
 #define _BG_H_
 
+//#include <SDL2/SDL.h>
 #include <SDL/SDL.h>
 #include "support.h"
 #include "sprite.h"
@@ -14,8 +15,13 @@ enum _bg_type {
 };
 
 typedef struct {
+    #ifdef GP2X
+    float speed_base;
+	float speed_rand;
+	#else
 	double speed_base;
 	double speed_rand;
+	#endif
 } CLOUDS_DATA;
 
 

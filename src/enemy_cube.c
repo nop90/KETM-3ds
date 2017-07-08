@@ -4,8 +4,13 @@ extern double fps_factor;
 
 typedef struct {
 	ENEMY_BASE b;
+	#ifdef GP2X
+	float radius;
+	float angle;
+	#else
 	double radius;
 	double angle;
+	#endif
 	int flag0;
 	int flag1;
 	int flag2;
@@ -41,7 +46,7 @@ void enemy_cube_add(int lv)
 void enemy_cube_move(SPRITE *s)
 {
 	CUBE_DATA *d=(CUBE_DATA *)s->data;
-	
+
 	d->flag2+=fps_factor;
 	if(d->flag2<500) {
 		if(!d->flag1) {

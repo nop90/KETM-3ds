@@ -45,7 +45,8 @@ void readModDirs( ) {
     strcpy(mods[1],"1941");
 	strcpy(mods[2],"Star Wars");
     strcpy(mods[3],"Iron Man");
-    modcount=4;
+    strcpy(mods[4],"Mario Kart");
+    modcount=5;
 }
 
 
@@ -105,7 +106,10 @@ printf("\n \
 
 int main(int argc, char *argv[])
 {
-//	strcpy(moddir,"romfs:/_KETM-episode1"); //default
+// In case game dir doesn't exist
+    mkdir("/3ds", 0777);
+    mkdir("/3ds/KETM", 0777);
+
 	 gfxInitDefault();
 	consoleInit(GFX_BOTTOM, NULL);
 	printf("Starting K.E.T.M.\n");

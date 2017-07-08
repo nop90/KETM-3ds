@@ -1,9 +1,14 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 typedef struct {
 	ENEMY_BASE b;
+	#ifdef GP2X
 	double radius;
 	int flag1;
 	double angle;
@@ -11,6 +16,15 @@ typedef struct {
 	double xcenter;
 	double ycenter;
 	int level;
+	#else
+	double radius;
+	int flag1;
+	double angle;
+	double counter;
+	double xcenter;
+	double ycenter;
+	int level;
+	#endif
 } EYEFO_DATA;
 
 void enemy_eyefo_add(int lv)
@@ -56,7 +70,7 @@ void enemy_eyefo_controller(CONTROLLER *c)
 	int *id_array=c->e;
 	SPRITE *s;
 	int invisible=0;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -71,7 +85,7 @@ void enemy_eyefo_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -87,7 +101,7 @@ void enemy_eyefo_controller(CONTROLLER *c)
 void enemy_eyefo_move(SPRITE *s)
 {
 	EYEFO_DATA *d=(EYEFO_DATA *)s->data;
-	
+
 	if(!d->flag1) {
 		d->radius+=fps_factor;
 		if(d->radius>150)
@@ -109,7 +123,11 @@ void enemy_eyefo_move(SPRITE *s)
 
 	d->counter+=fps_factor;
 	if(d->counter<300) {
+	    #ifdef GP2X
+	    if(d->ycenter<240)  //Farox
+	    #else
 		if(d->ycenter<272)  //denis
+		#endif
 			d->ycenter+=fps_factor;
 	} else if(d->counter>600) {
 			d->ycenter-=fps_factor;

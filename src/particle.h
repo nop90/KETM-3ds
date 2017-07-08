@@ -1,5 +1,6 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
+//#include <SDL2/SDL.h>
 #include <SDL/SDL.h>
 #include <stdlib.h>
 #include <math.h>
@@ -15,7 +16,11 @@ typedef struct _parsys {
 	int y_pos;
 	int maxspeed;
 	int gangle;	/* Gravitation */
+	#ifdef GP2X
+	float gspeed;
+	#else
 	double gspeed;
+	#endif
 	int ttl;	/* Lebenszeit */
 	int active;	/* Anzahl aktiver Partikel */
 	int fx;		/* Effekt */
@@ -23,7 +28,7 @@ typedef struct _parsys {
 	struct _par *particle;	/* Erster Partikel im System */
 	struct _parsys *next;	/* Naechstes Partikelsystem oder NULL */
 } PARSYS;
-	
+
 typedef struct _par {
 	SDL_Surface *img;	/* Image oder NULL */
 	double x,y;		/* akt. position */

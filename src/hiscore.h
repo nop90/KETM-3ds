@@ -23,7 +23,8 @@ enum _hclist_edit_states {
 };
 
 typedef struct {
-	char name[4];
+	//char name[4];
+	char name[5];//..changed by Farox
 	int score;
 } HSC_LIST;
 
@@ -53,5 +54,7 @@ void hsc_show_move();
 void hsc_entry_init();
 void hsc_entry_work();
 void hsc_entry_show();
+void hsc_load(); //added by Farox
+void hsc_save(); //added by Farox
 
 #endif

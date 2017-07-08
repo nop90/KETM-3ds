@@ -8,16 +8,18 @@ extern double fps_factor;
 SDL_Surface *badblocks=NULL;
 SDL_Surface *presents=NULL;
 SDL_Surface *ketm=NULL;
+
 double scale=0;
 
 void startintro_init()
 {
+
 	if(badblocks==NULL) {
 		badblocks=loadbmp("badblocks.png");
 		SDL_SetColorKey(badblocks,SDL_SRCCOLORKEY,0x00000000);
 	}
 	if(presents==NULL) {
-		presents=font_render("PRESENTS",FONT01);
+		presents=font_render("PRESENT",FONT01);
 	}
 	if(ketm==NULL) {
 		ketm=loadbmp("ketm.png");
@@ -25,21 +27,28 @@ void startintro_init()
 	}
 	SDL_FillRect(screen,NULL,SDL_MapRGB(screen->format,0,0,0));
 	scale=0;
+	//newstate(ST_START_INTRO,STIN_FADEIN_BB,0);old before PACC
+	#ifdef PACC
+	newstate(ST_START_INTRO,STIN_FADEIN_PACC,0);
+	#else
 	newstate(ST_START_INTRO,STIN_FADEIN_BB,0);
+	#endif
 }
 void startintro_work()
 {
 	if(state.mainstate!=ST_START_INTRO || state.newstate==1) return;
 
 	if(keyboard_keypressed()) {
+
 		newstate(ST_START_INTRO,STIN_QUIT,0);
-	}
+	    }
 
 	SDL_FillRect(screen,NULL,SDL_MapRGB(screen->format,0,0,0));
 
 	switch(state.substate) {
 		case STIN_FADEIN_BB:
-			scale+=0.005*fps_factor;
+			//scale+=0.005*fps_factor; changed by Farox
+			scale+=0.004*fps_factor;
 			startintro_centerimg(badblocks,scale);
 			if(scale>=1.0) {
 			//	parsys_add(badblocks,2,2,screen->w/2-badblocks->w/2,screen->h/2-badblocks->h/2,30,0,0,400,PIXELIZE,NULL);
@@ -73,6 +82,13 @@ void startintro_work()
 			break;
 		case STIN_QUIT:
 			//parsys_remove_all();
+
+			#ifdef PACC
+			/////added for PACC
+			unloadbmp_by_name("pacc.png");
+			/////////////////
+			#endif
+
 			unloadbmp_by_name("badblocks.png");
 			badblocks=NULL;
 			//SDL_FreeSurface(presents);

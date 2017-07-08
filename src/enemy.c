@@ -5,13 +5,13 @@ extern SDL_Surface *screen;
 extern SPRITE *player;
 extern double fps_factor;
 
-
 void enemy_bullet_create(SPRITE *s, double speed)
+
 {
 	SPRITE *h;
 	BULLET_DATA *data;
 
-	h=sprite_add_file("kugel.png",1,PR_ENEMY);	
+	h=sprite_add_file("kugel.png",1,PR_ENEMY);
 	h->type=SP_EN_BULLET;
 	h->flags|=(SP_FLAG_VISIBLE|SP_FLAG_COLCHECK);
 	h->mover=enemy_bullet_move;
@@ -43,7 +43,7 @@ void enemy_laser_create(SPRITE *s, double speed)
 	SPRITE *h;
 	LASER_DATA *data;
 
-	h=sprite_add_file("bshoot.png",18,PR_ENEMY);	
+	h=sprite_add_file("bshoot.png",18,PR_ENEMY);
 	h->type=SP_EN_LASER;
 	h->flags|=(SP_FLAG_VISIBLE|SP_FLAG_COLCHECK);
 	h->mover=enemy_laser_move;
@@ -99,7 +99,7 @@ void enemy_homing_update(SPRITE *s)
 {
 
 	HOMING_DATA *d=(HOMING_DATA *)s->data;
-	
+
 	/* Zielwinkel erfassen */
 	d->angle=atan2(player->y-s->y,player->x-s->x);
 	s->aktframe=(radtodeg(d->angle)*20)/360;
@@ -108,7 +108,7 @@ void enemy_homing_update(SPRITE *s)
 
 void enemy_homing_move(SPRITE *s)
 {
-	SDL_Surface *tmp;
+	//SDL_Surface *tmp;
 	HOMING_DATA *d=(HOMING_DATA *)s->data;
 
 	d->delay-=fps_factor;
@@ -132,7 +132,11 @@ void enemy_homing_move(SPRITE *s)
 	}
 }
 
+#ifdef GP2X
+void explosion_add(int x, int y, float wait, int type)
+#else
 void explosion_add(int x, int y, double wait, int type)
+#endif
 {
 	SPRITE *ex=NULL;
 	EXPLOSION_DATA *d;
@@ -158,8 +162,8 @@ void explosion_add(int x, int y, double wait, int type)
 	default:
 		error(ERR_WARN,"explosion_add: unknown type: %d",type);
 	}
-	
-	
+
+
 	ex->flags&=~SP_FLAG_VISIBLE;
 	ex->anim_speed=0;
 	ex->aktframe=-1;

@@ -2,6 +2,7 @@
 #define _SUPPORT_H_
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <stdlib.h>
 #include <string.h>
 #include "stdarg.h"
@@ -14,8 +15,8 @@
 #define sign(x) ((x) > 0 ? 1 : ((x) == 0 ? 0 : (-1) ))
 #define CHECKPOINT error(ERR_DEBUG,"Checkpoint file:%s line:%d function:%s",__FILE__,__LINE__,__FUNCTION__)
 
-#define WIDTH 400 
-#define HEIGHT 240 
+#define WIDTH 400
+#define HEIGHT 240
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
@@ -61,6 +62,12 @@ typedef struct {
 	int r;
 	int f;
 	int e;
+	//#ifdef GP2X_diagonals
+	int ul;
+	int ur;
+	int dl;
+	int dr;
+	//#endif
 } KEYCONFIG;
 
 #include "font.h"
@@ -71,7 +78,9 @@ typedef struct {
 char moddir[20];
 
 void game_init(int argc, char *argv[]);
+#ifndef GP2X
 void toggle_fullscreen();
+#endif
 void error(int errorlevel, char *msg, ...);
 SDL_Surface *loadbmp(char *filename);
 void unloadbmp_by_surface(SDL_Surface *s);
@@ -81,8 +90,8 @@ SDL_Surface *imglist_search(char *name);
 void imglist_garbagecollect();
 Uint32 getpixel(SDL_Surface *surface, int x, int y);
 void putpixel(SDL_Surface *surface, int x, int y, Uint32 color);
-void draw_line(SDL_Surface *s, int x1, int y1, int x2, int y2, Uint32 farbe1, Uint32 farbe2);
-void draw_line_simple(SDL_Surface *s, int x1, int y1, int x2, int y2, Uint32 farbe1);
+//void draw_line(SDL_Surface *s, int x1, int y1, int x2, int y2, Uint32 farbe1, Uint32 farbe2);
+//void draw_line_simple(SDL_Surface *s, int x1, int y1, int x2, int y2, Uint32 farbe1);
 void blit_scaled(SDL_Surface *src, SDL_Rect *src_rct, SDL_Surface *dst, SDL_Rect *dst_rct);
 void blit_calpha(SDL_Surface *src, SDL_Rect *src_rct, SDL_Surface *dst, SDL_Rect *dst_rct);
 void keyboard_clear();

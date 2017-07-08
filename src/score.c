@@ -20,25 +20,30 @@ void score_display()
 	//sprintf(buffer,"STAGE : %d",p->level);
 	//font_print(buffer,FONT07,0,30);
 
-	sprintf(buf,"WEAPON: ");
+	//sprintf(buf,"WEAPON: ");
+	sprintf(buf,"W: ");
 	switch(p->weapon) {
 	case WP_PLASMA:
 		strcat(buf,"PLASMA");
 		break;
 	case WP_DOUBLEPLASMA:
-		strcat(buf,"DOUBLE-PLASMA");
+		//strcat(buf,"DOUBLE-PLASMA");
+		strcat(buf,"2X-PLASMA");
 		break;
 	case WP_QUADPLASMA:
-		strcat(buf,"QUAD-PLASMA");
+		//strcat(buf,"QUAD-PLASMA");
+		strcat(buf,"4X-PLASMA");
 		break;
 	case WP_FIREBALL:
 		strcat(buf,"FIRERAY");
 		break;
 	case WP_DOUBLEFIREBALL:
-		strcat(buf,"DOUBLE-FIRERAY");
+		//strcat(buf,"DOUBLE-FIRERAY");
+		strcat(buf,"2X-FIRERAY");
 		break;
 	case WP_QUADFIREBALL:
-		strcat(buf,"QUAD-FIRERAY");
+		//strcat(buf,"QUAD-FIRERAY");
+		strcat(buf,"4X-FIRERAY");
 		break;
 	case WP_KILLRAY:
 		strcat(buf,"KILLRAY");
@@ -48,11 +53,11 @@ void score_display()
 		break;
 	}
 
-	sprintf(buffer,"SCORE : %06d  SHIPS: %d  %s",p->score, p->lives, buf);
+	sprintf(buffer,"SCORE: %06d  LIVES: %d  %s",p->score, p->lives, buf);
 	font_print(buffer,FONT07,0,0);
-	
+
 	if(p->extra!=PLX_NONE) {
-		sprintf(buffer,"EXTRA : ");
+		sprintf(buffer,"EXTRA: ");
 		switch(p->extra) {
 		case PLX_HOMING:
 			strcat(buffer,"HOMING MISSILE");
@@ -69,7 +74,7 @@ void score_display()
 		}
 		sprintf(buf,"  X-TIME: %d",(int)p->extra_time/10);
 		strcat(buffer,buf);
-	
+
 		font_print(buffer,FONT07,0,10);
 	}
 

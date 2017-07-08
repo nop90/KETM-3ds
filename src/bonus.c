@@ -1,6 +1,10 @@
 #include "bonus.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SDL_Surface *screen;
 
 void bonus_add(int x, int y, int type)
@@ -39,10 +43,17 @@ void bonus_add(int x, int y, int type)
 		return;
 	}
 	s->flags|=(SP_FLAG_VISIBLE|SP_FLAG_COLCHECK);
+	#ifdef GP2X
+	if(x<300) // farox .....to check
+		s->x=x+20;
+	else
+		s->x=x-10;
+	#else
 	if(x<600)
 		s->x=x+20;
 	else
 		s->x=x-10;
+    #endif
 	s->y=y;
 	s->type=type;
 	s->mover=bonus_move;
@@ -56,7 +67,7 @@ void bonus_move(SPRITE *s)
 	BONUS_DATA *d=(BONUS_DATA *)s->data;
 
 	s->y+=d->speed*fps_factor;
-	if(s->y>272) s->type=-1; //denis 480
+	if(s->y>240) s->type=-1; //Farox
 }
 
 void bonus_info_add(int x, int y, char *filename)
@@ -111,5 +122,5 @@ void bonus_infotext_move(SPRITE *c)
 		 parsys_add(s,1,1,c->x,c->y,30,0,0,100,PIXELIZE,NULL);
 		c->type=-1;
 	}
-		
+
 }

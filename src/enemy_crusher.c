@@ -43,7 +43,7 @@ void enemy_crusher_add(int lv)
 		data->c1=0;
 		data->c2=0;
 		data->level=lv;
-		
+
 	}
 }
 
@@ -53,7 +53,7 @@ void enemy_crusher_controller(CONTROLLER *c)
 	int *id_array=c->e;
 	SPRITE *s;
 	int invisible=0;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -69,7 +69,7 @@ void enemy_crusher_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -89,7 +89,7 @@ void enemy_crusher_move(SPRITE *s)
 	if(d->c2<2) {
 		if(!d->c1) {
 			s->y+=(3+d->level)*fps_factor;
-			if(s->y>400) {
+			if(s->y>200) {
 				d->c1=1;
 				d->c2+=1;
 			}

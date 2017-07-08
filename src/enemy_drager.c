@@ -2,7 +2,11 @@
 
 extern SDL_Surface *screen;
 extern SPRITE *player;
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 typedef struct {
 	ENEMY_BASE b;
@@ -61,6 +65,10 @@ void enemy_drager_move(SPRITE *s)
 		s->x+=-0.6*fps_factor;
 	else
 		s->x+=0.6*fps_factor;
+    #ifdef GP2X
+    if(s->y>240) //Farox
+    #else
 	if(s->y>272) //denis 480
+	#endif
 		s->type=-1;
 }

@@ -1,13 +1,21 @@
 #include "enemy.h"
 
 extern SPRITE *player;
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 typedef struct {
 	ENEMY_BASE b;
 	int state;
 	int dir;
+	#ifdef GP2X
+	float speed;
+	#else
 	double speed;
+	#endif
 	int level;
 } PROBALL_DATA;
 
@@ -52,7 +60,7 @@ void enemy_proball_controller(CONTROLLER *c)
 	int *id_array=c->e;
 	SPRITE *s;
 	int invisible=0;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -67,7 +75,7 @@ void enemy_proball_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -83,11 +91,11 @@ void enemy_proball_controller(CONTROLLER *c)
 void enemy_proball_move(SPRITE *s)
 {
 	PROBALL_DATA *d=(PROBALL_DATA *)s->data;
-	
+
 	switch(d->state) {
 		case 0:
 			s->y+=d->speed*fps_factor;
-			if(s->y>=300) {
+			if(s->y>=250) {
 				d->speed=2;
 				d->state=1;
 			}
@@ -126,7 +134,11 @@ void enemy_proball_move(SPRITE *s)
 			} else {
 				s->x-=d->speed*fps_factor;
 			}
+			#ifdef GP2X
+			if(s->y>=240) //Farox
+			#else
 			if(s->y>=272) //denis 480
+			#endif
 				// s->type=-1;
 				s->flags&=~SP_FLAG_VISIBLE;
 			break;

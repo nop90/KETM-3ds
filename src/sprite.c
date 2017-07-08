@@ -63,7 +63,7 @@ void sprite_remove_colmap(COLMAP_CACHE *c)
 		error(ERR_WARN,"COLMAP_CACHE refcount already zero");
 	}
 }
-	
+
 
 SPRITE *sprite_add_file(char *filename, int frames, Uint8 priority)
 {
@@ -72,11 +72,12 @@ SPRITE *sprite_add_file(char *filename, int frames, Uint8 priority)
 
 	s=loadbmp(filename);
 	SDL_SetColorKey(s,SDL_SRCCOLORKEY|SDL_RLEACCEL,0x00000000);
+	//SDL_SetColorKey(s,SDL_SRCCOLORKEY|SDL_RLEACCEL,0x000000);//prova farox
 	sp=sprite_add(s,frames,priority,0);
 	return sp;
 }
 
-	
+
 SPRITE *sprite_add(SDL_Surface *surface, int frames, Uint8 priority, int nocache)
 {
 	SPRITE *s, *t, *p=NULL;
@@ -95,7 +96,7 @@ SPRITE *sprite_add(SDL_Surface *surface, int frames, Uint8 priority, int nocache
 		p->next=s;
 	else
 		sprite=s;
-		
+
 	s->id=current_id;
 	current_id++;
 	s->priority=priority;
@@ -113,7 +114,7 @@ SPRITE *sprite_add(SDL_Surface *surface, int frames, Uint8 priority, int nocache
 	s->ticks=0;
 	if(nocache) s->flags|=SP_FLAG_NOCACHE;
 	s->data=NULL;
-	
+
 	return(s);
 }
 
@@ -123,7 +124,12 @@ SDL_Surface *sprite_getcurrimg(SPRITE *s)
 	SDL_Surface *i;
 	SDL_Rect r;
 
+	//if((i=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_HWSURFACE,s->w,s->h,
+	#ifdef GP2X
+	if((i=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_SWSURFACE,s->w,s->h,
+	#else
 	if((i=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_HWSURFACE,s->w,s->h,
+	#endif
 		screen->format->BitsPerPixel,
 		screen->format->Rmask,
 		screen->format->Gmask,
@@ -134,12 +140,13 @@ SDL_Surface *sprite_getcurrimg(SPRITE *s)
 	}
 	SDL_SetColorKey(i,SDL_SRCCOLORKEY| SDL_RLEACCEL,0x00000000); //denis
 
+
 	r.x=s->w*s->aktframe;
 	r.y=0;
 	r.w=s->w;
 	r.h=s->h;
 	SDL_BlitSurface(s->img,&r,i,NULL);
-	
+
 	return i;
 }
 
@@ -161,7 +168,7 @@ void sprite_display(int type)
 			t.w=s->w;
 			t.h=s->h;
 			t.x=s->w*s->aktframe;
-			
+
 			if(s->flags&SP_FLAG_CHEAPALPHA) {
 				blit_calpha(s->img,&t,screen,&r);
 			} else {
@@ -278,7 +285,7 @@ void sprite_work(int type)
 		n=s->next;
 		if (s->ticks>1000) {
 			s->ticks=0;
-		 if ((s->priority==PR_ENEMY || s->priority== PR_ENEMY_WEAPON) && s->type!=SP_EN_BOSS01 && s->type!=SP_EN_BOSS02 && s->type!=SP_EN_BOSS03) 
+		 if ((s->priority==PR_ENEMY || s->priority== PR_ENEMY_WEAPON) && s->type!=SP_EN_BOSS01 && s->type!=SP_EN_BOSS02 && s->type!=SP_EN_BOSS03 && s->type!=SP_MENUTEXT)
 			s->type=-1;
 		}
 		if(s->type==-1) {
@@ -300,7 +307,7 @@ SPRITE *sprite_colcheck(SPRITE *tocheck, int type)
 			if(sprite_col_bounding(s,tocheck)) { /* Bounding Box Collosion? */
 				if(sprite_col_pixel(s,tocheck)) { /* Pixel-Level Collison */
 					return s;
-				} 
+				}
 			}
 		}
 		s=s->next;
@@ -357,7 +364,7 @@ int sprite_col_pixel(SPRITE *a, SPRITE *b)
 	Sint16 h2=b->h;
 	Sint16 x2=b->x;
 	Sint16 y2=b->y;
-	
+
 	Sint32 x1o=0,x2o=0,y1o=0,y2o=0,offs;
 	int i1=0, i2=0;
 
@@ -401,7 +408,7 @@ int sprite_col_pixel(SPRITE *a, SPRITE *b)
 		l=w2-x2o;
 	}
 
-	
+
 	for(y=rc.y; y<=y1+h1 && y<=y2+h2; y++) {
 		offs=sprite_memand(map1,map2,i1,i2,l);
 		if(offs) {
@@ -412,7 +419,7 @@ int sprite_col_pixel(SPRITE *a, SPRITE *b)
 		map1=a->cmap->col[a->aktframe];
 		map1+=offs/8;
 		i1=offs%8;
-		
+
 		offs=(y-y2)*w2+x2o;
 		map2=b->cmap->col[b->aktframe];
 		map2+=offs/8;
@@ -427,7 +434,7 @@ int sprite_memand(Uint8 *s1, Uint8 *s2, int shift1, int shift2, int n)
 {
 	int b;
 	Uint16 i1=1<<shift1, i2=1<<shift2;
-	
+
 	for(b=0; b<n; b++) {
 		if(i1==0x100) { i1=0x01; s1++; }
 		if(i2==0x100) { i2=0x01; s2++; }

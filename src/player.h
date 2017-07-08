@@ -1,5 +1,6 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
+//#include <SDL2/SDL.h>
 #include <SDL/SDL.h>
 #include <math.h>
 
@@ -53,7 +54,11 @@ typedef struct {
 typedef struct {
 	int strength;
 	int angle;
+	#ifdef GP2X
+	float speed;
+	#else
 	double speed;
+	#endif
 } PL_PLASMA_DATA;
 
 typedef struct {

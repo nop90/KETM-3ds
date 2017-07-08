@@ -1,14 +1,24 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SPRITE *player;
 
 typedef struct {
 	ENEMY_BASE b;
 	int angle;
+	#ifdef GP2X
+	float speed;
+	int state;
+	float wait;
+	#else
 	double speed;
 	int state;
 	double wait;
+	#endif
 	int level;
 } RWINGX_DATA;
 
@@ -79,7 +89,7 @@ void enemy_rwingx_move(SPRITE *s)
 			if(s->y>=HEIGHT-150) {
 				if(d->level)
 					enemy_bullet_create(s,3+d->level);
-				
+
 				d->state=4;
 				d->angle+=180;
 				d->angle%=360;

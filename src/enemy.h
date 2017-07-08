@@ -40,7 +40,6 @@ typedef struct {
 	double framestat;
 } EXPLOSION_DATA;
 
-
 void enemy_bullet_create(SPRITE *s, double speed);
 void enemy_bullet_move(SPRITE *s);
 void enemy_laser_create(SPRITE *s, double speed);
@@ -85,6 +84,15 @@ void enemy_zatak_move(SPRITE *s);
 void enemy_badguy_add(int lv);
 void enemy_badguy_move(SPRITE *s);
 
+void enemy_grounder_add(int lv, char speed);
+void enemy_grounder_move(SPRITE *s);
+
+void enemy_bgpanel_add(int lv, char speed);
+void enemy_bgpanel_move(SPRITE *s);
+
+void enemy_bgpanel2_add(int lv, char speed);
+void enemy_bgpanel2_move(SPRITE *s);
+
 void enemy_proball_add(int lv);
 void enemy_proball_controller(CONTROLLER *c);
 void enemy_proball_move(SPRITE *s);
@@ -124,6 +132,10 @@ void enemy_boss02_ice_move(SPRITE *s);
 
 void enemy_boss03_add(int lv);
 void enemy_boss03_move(SPRITE *s);
+void enemy_boss03_hitbyplayer(SPRITE *c); //added by Farox
+void enemy_boss03_hitbyweapon(SPRITE *c, SPRITE *s, int angle); //added by Farox
+void enemy_boss03_fire(int where);  //added by Farox
+
 
 void enemy_gametext_add(char *text, int y);
 void enemy_gametext_mover(SPRITE *s);

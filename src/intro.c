@@ -9,6 +9,7 @@ extern double fps_factor;
 SDL_Surface *intropic=NULL;
 SDL_Surface *ketm_logo=NULL;
 int alpha;
+
 double delay;
 int keydelay;
 
@@ -60,7 +61,11 @@ void intro_work()
 			SDL_BlitSurface(intropic,NULL,screen,NULL);
 			SDL_SetAlpha(ketm_logo, SDL_SRCALPHA, 255);
 			r.x=(WIDTH/2)-(ketm_logo->w/2);
-			r.y=30;
+			#ifdef GP2X
+            r.y=15;
+            #else
+            r.y=30;
+            #endif
 			r.w=ketm_logo->w;
 			r.h=ketm_logo->h;
 			SDL_BlitSurface(ketm_logo,NULL,screen,&r);
@@ -100,7 +105,11 @@ void intro_fadein_ketm()
 
 	SDL_SetAlpha(ketm_logo,SDL_SRCALPHA,255-alpha);
 	r.x=(WIDTH/2)-(ketm_logo->w/2);
+	#ifdef GP2X
+	r.y=15;
+	#else
 	r.y=30;
+	#endif
 	r.w=ketm_logo->w;
 	r.h=ketm_logo->h;
 	SDL_BlitSurface(ketm_logo,NULL,screen,&r);

@@ -1,13 +1,22 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SPRITE *player;
 
 typedef struct {
 	ENEMY_BASE b;
 	int state;
+	#ifdef GP2X
+	float angle;
+	float speed;
+	#else
 	double angle;
 	double speed;
+	#endif
 	int type;
 	int level;
 } MING_DATA;
@@ -104,7 +113,7 @@ void enemy_ming_controller(CONTROLLER *c)
 	int *id_array=c->e;
 	SPRITE *s;
 	int invisible=0;
-	
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL)
@@ -119,7 +128,7 @@ void enemy_ming_controller(CONTROLLER *c)
 		controller_remove(c);
 		return;
 	}
-			
+
 	for(i=0;i<c->max;i++) {
 		s=sprite_get_by_id(id_array[i]);
 		if(s!=NULL) {
@@ -131,7 +140,7 @@ void enemy_ming_controller(CONTROLLER *c)
 	bonus_add(id_array[c->max],id_array[c->max+1],SP_BONUS_FIREPOWER);
 	controller_remove(c);
 }
-	
+
 
 
 void enemy_ming_move(SPRITE *s)
@@ -172,7 +181,7 @@ void enemy_ming_move(SPRITE *s)
 		if((s->x<-s->w)||(s->x>WIDTH)||(s->y<-s->h)||(s->y>HEIGHT))
 			s->flags&=~SP_FLAG_VISIBLE;
 		break;
-				
+
 
 	}
 

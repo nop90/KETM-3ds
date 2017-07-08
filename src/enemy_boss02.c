@@ -1,31 +1,51 @@
 #include "enemy.h"
 
 extern SPRITE *player;
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SDL_Surface *screen;
 
 typedef struct _boss02_data {
 	ENEMY_BASE b;
 	int type;	/* 0: normal, 1: destroyed */
 	int state;
+	#ifdef GP2X
+	float wait1;
+	float wait2;
+	#else
 	double wait1;
 	double wait2;
+	#endif
 	int xp;
 	int level;
 } BOSS02_DATA;
 
 typedef struct {
 	int boss_id;
+	#ifdef GP2X
+	float angle;
+	float wait;
+	#else
 	double angle;
 	double wait;
+	#endif
 } BOSS02_SR_DATA;
 
 typedef struct {
 	int no;
 	int stat;
+	#ifdef GP2X
+	float angle;
+	float time;
+	float speed;
+	#else
 	double angle;
 	double time;
 	double speed;
+	#endif
 } BOSS02_ICE_DATA;
 
 
@@ -366,7 +386,7 @@ void enemy_boss02_ice_controller(CONTROLLER *e)
 			s->aktframe=l->aktframe;
 		}
 	}
-		
+
 }
 
 void enemy_boss02_ice_move(SPRITE *s)
@@ -400,7 +420,7 @@ void enemy_boss02_ice_move(SPRITE *s)
 		l->angle+=360;
 	if(l->angle>360)
 		l->angle-=360;
-	
+
 	s->x+=cos(degtorad(l->angle))*l->speed*fps_factor;
 	s->y+=sin(degtorad(l->angle))*l->speed*fps_factor;
 	s->aktframe=(((int)l->angle+270)/10)%36;

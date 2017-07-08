@@ -18,10 +18,6 @@ void font_init()
 	fonts[FONT02].h=FONT02H;
 	strcpy(fonts[FONT02].charorder,FONT02CHARS);
 
-	strcpy(fonts[FONT03].filename,FONT03NAME);
-	fonts[FONT03].w=FONT03W;
-	fonts[FONT03].h=FONT03H;
-	strcpy(fonts[FONT03].charorder,FONT03CHARS);
 
 	strcpy(fonts[FONT04].filename,FONT04NAME);
 	fonts[FONT04].w=FONT04W;
@@ -54,7 +50,12 @@ SDL_Surface *font_render(char *text,int fontnr)
 	SDL_Rect s,d;
 	unsigned int i,j;
 
+
+	#ifdef GP2X
+	txtimg=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_SWSURFACE,strlen(text)*fonts[fontnr].w,fonts[fontnr].h,
+	#else
 	txtimg=SDL_CreateRGBSurface(SDL_SRCCOLORKEY|SDL_HWSURFACE,strlen(text)*fonts[fontnr].w,fonts[fontnr].h,
+	#endif
 		screen->format->BitsPerPixel,
 		screen->format->Rmask,
 		screen->format->Gmask,
@@ -62,11 +63,12 @@ SDL_Surface *font_render(char *text,int fontnr)
 		screen->format->Amask);
 	SDL_SetColorKey(txtimg,SDL_SRCCOLORKEY|SDL_RLEACCEL,0x00000000);
 
+
 	for(i=0;i<strlen(text);i++) {
 
-		for(j=0;j<strlen(fonts[fontnr].charorder);j++) 
+		for(j=0;j<strlen(fonts[fontnr].charorder);j++)
 			if(text[i]==fonts[fontnr].charorder[j]) break;
-		
+
 		s.w=fonts[fontnr].w;
 		s.h=fonts[fontnr].h;
 		s.x=j*fonts[fontnr].w;
@@ -81,12 +83,12 @@ SDL_Surface *font_render(char *text,int fontnr)
 	}
 	return(txtimg);
 }
-				
+
 void font_print(char *text, int fontnr, int x, int y)
 {
 	SDL_Surface *textsurface;
 	SDL_Rect r;
-	
+
 	textsurface=font_render(text,fontnr);
 	r.x=x;
 	r.y=y;

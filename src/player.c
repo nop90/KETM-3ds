@@ -5,6 +5,8 @@ extern int keyboard[];
 extern KEYCONFIG keyconfig;
 extern double fps_factor;
 extern SPRITE *sprite;
+extern int difficulty;
+
 SPRITE *player;
 
 void player_init()
@@ -56,10 +58,19 @@ void player_move(SPRITE *s)
 
 			if(!d->explode) {
 				playChunk(4);
+				explosion_add(s->x+5,s->y+5,0,rand()%3+1);
+				explosion_add(s->x+5,s->y+20,0,rand()%3+1);
+				explosion_add(s->x+20,s->y+5,0,rand()%3+1);
+				explosion_add(s->x+20,s->y+20,0,rand()%3+1);
 				s->flags|=SP_FLAG_VISIBLE;
 				d->save_delay=120;
 				d->state=PL_SAVE;
-				d->weapon=0; //denis - reset weapons
+				d->weapon-=difficulty+2;
+				if ( d->weapon<0)
+					d->weapon=0; //denis - reset weapons
+
+				if(d->player_speed>3)
+					d->player_speed--;
 			}
 			break;
 
@@ -71,14 +82,14 @@ void player_move(SPRITE *s)
 
 			if(d->save_delay>0) {
 				d->save_delay-=fps_factor;
-				s->alpha=128;
+				s->alpha=80;
 			} else {
 				d->state=PL_NORMAL;
 				s->alpha=255;
 			}
-			break;	
+			break;
 	}
-		
+
 }
 
 void player_keycontrol(SPRITE *s)
@@ -89,7 +100,7 @@ void player_keycontrol(SPRITE *s)
 	/* if player is invisible (state gameover) allow no keycontrol */
 	if(!(s->flags&SP_FLAG_VISIBLE))
 		return;
-	
+
 	if(keyboard[keyconfig.l]) {
 		direction=-1;
 		if(s->x>0) {
@@ -114,7 +125,36 @@ void player_keycontrol(SPRITE *s)
 		s->y+=d->player_speed*fps_factor;
 	}
 
-		
+    if(keyboard[keyconfig.ul]) {
+		direction=-1;
+		if((s->x>0)&& (s->y>0)) {
+			s->x-=d->player_speed*fps_factor;//left
+			s->y-=d->player_speed*fps_factor;//up
+		}
+	}
+	if(keyboard[keyconfig.ur]) {
+		direction=1;
+		if((s->x<screen->w-s->w)&& (s->y>0)) {
+			s->x+=d->player_speed*fps_factor;//right
+			s->y-=d->player_speed*fps_factor;//up
+		}
+	}
+	//
+	if(keyboard[keyconfig.dl]) {
+		direction=-1;
+		if((s->x>0)&& (s->y<screen->h-s->h)) {
+			s->x-=d->player_speed*fps_factor;//left
+			s->y+=d->player_speed*fps_factor;//down
+		}
+	}
+	if(keyboard[keyconfig.dr]) {
+		direction=1;
+		if((s->x<screen->w-s->w)&& (s->y<screen->h-s->h)) {
+			s->x+=d->player_speed*fps_factor;//right
+			s->y+=d->player_speed*fps_factor;//down
+		}
+	}
+
 	if(d->weapon_wait>0)
 		d->weapon_wait-=fps_factor;
 
@@ -196,12 +236,12 @@ void player_keycontrol(SPRITE *s)
 void player_colcheck(SPRITE *s, int mask)
 {
 	SPRITE *c;
-	SDL_Surface *spimg;
+	//SDL_Surface *spimg;
 	PLAYER_DATA *d=(PLAYER_DATA *)s->data;
 
 	/* Kollision Player <> Feind, Feindwaffe oder Bonusitem */
 	if((c=sprite_colcheck(s,mask))!=NULL) {
-		
+
 		switch(c->type) {
 			case SP_BONUS_FIREPOWER:
 				playChunk(5);
@@ -241,7 +281,7 @@ void player_colcheck(SPRITE *s, int mask)
 				//spimg=sprite_getcurrimg(c);
 				//parsys_add(spimg, c->w,1, c->x,c->y, 5, 0, 0, 80, LINESPLIT, NULL);
 				//SDL_FreeSurface(spimg);
-				if(d->player_speed<8) {
+				if(d->player_speed<6) {
 					d->player_speed++;
 					bonus_info_add(c->x,c->y,"speed.png");
 				} else {
@@ -303,13 +343,13 @@ void player_colcheck(SPRITE *s, int mask)
 				enemy_boss03_hitbyplayer(c);
 				break;
 
-			default:	
+			default:
 			//	spimg=sprite_getcurrimg(c);
 			//	parsys_add(spimg, 2,2, c->x,c->y, 10, 270, 10, 30, EXPLODE|DIFFSIZE, NULL);
 				//SDL_FreeSurface(spimg);
 			//	spimg=NULL;
 				d->state=PL_EXPLODE;
-				explosion_add(c->x+5,c->y+5,0,rand()%3+1);//denis	
+				explosion_add(c->x+5,c->y+5,0,rand()%3+1);//denis
 				d->explode=0;
 
 				//spimg=sprite_getcurrimg(s);
@@ -707,7 +747,11 @@ void player_move_homing(SPRITE *s)
 	int ta;
 	SPRITE *tg=(SPRITE *)b->tgsprite; /* Target-Fadenkreuz */
 	SPRITE *target=NULL;	/* Target */
+	#ifdef GP2X
+	float dangle;
+	#else
 	double dangle;
+	#endif
 
 	switch(b->state) {
 		case 0:	/* Raketen in Ausgangspos. bringen (Sprengkopf nach Norden) */
@@ -812,7 +856,7 @@ int search_enemy()
 {
 	/* Suche Enemy-Sprite, das noch nicht verfolgt wird, liefert SPRITE-ID oder -1 */
 	SPRITE *s=sprite;
-	
+
 	while(s!=NULL) {
 		if((s->type&SP_SHOW_ENEMYS)&&(!(s->flags&SP_FLAG_PARANOIA))&&(s->flags&SP_FLAG_VISIBLE)) {
 			if((s->x>0)&&(s->x<screen->w-s->w)&&(s->y>0)&&(s->y<screen->h-s->h)) {
@@ -831,7 +875,7 @@ void player_add_shield(SPRITE *s)
 	SPRITE *c;
 	PL_SHIELD_DATA *d;
 	int i;
-	
+
 	for(i=0;i<=359;i+=45) {
 		c=sprite_add_file("cshoot.png",18,PR_PLAYER);
 		c->flags|=SP_FLAG_VISIBLE;
@@ -840,7 +884,7 @@ void player_add_shield(SPRITE *s)
 		c->mover=player_move_shield;
 		d->angle=i;
 		d->speed=5;
-		d->rad=80;
+		d->rad=40;
 		c->type=SP_PL_SHIELD;
 	}
 
@@ -887,7 +931,11 @@ void player_add_hlaser(SPRITE *s)
 			c->x=(s->x+s->w/2)-5;
 			c->y=s->y+s->h/2+15;
 			c->flags|=SP_FLAG_VISIBLE;
+			#ifdef GP2X
+			c->aktframe=5-((float)6/e->max)*i;
+			#else
 			c->aktframe=5-((double)6/e->max)*i;
+			#endif
 			if(i==0) {
 				c->mover=player_move_hlaser;
 				b=mmalloc(sizeof(PL_HLASER_DATA));
@@ -934,7 +982,7 @@ void player_controller_hlaser(CONTROLLER *c)
 		}
 	}
 }
-		
+
 
 void player_move_hlaser(SPRITE *s)
 {
@@ -1029,7 +1077,7 @@ void player_move_hlaser(SPRITE *s)
 void weapon_colcheck(SPRITE *s, int angle, int destroy, int check_bullets)
 {
 	SPRITE *c;
-	SDL_Surface *spimg;
+	//SDL_Surface *spimg;
 	ENEMY_BASE *d;
 	WEAPON_BASE *b=(WEAPON_BASE *)s->data;
 	PL_HOMING_DATA *h=(PL_HOMING_DATA *)s->data;
@@ -1048,7 +1096,7 @@ void weapon_colcheck(SPRITE *s, int angle, int destroy, int check_bullets)
 	}
 
 	if((c=sprite_colcheck(s,SP_SHOW_ENEMYS))!=NULL) {
-		
+
 		if(s->type==SP_PL_HOMING) {
 			/* Gegner von Homing-Missile getroffen? */
 			/* Paranoia-Flag und Target-Fadenkreuz entfernen */
@@ -1085,7 +1133,7 @@ void weapon_colcheck(SPRITE *s, int angle, int destroy, int check_bullets)
 				//	parsys_add(spimg, 2,2, c->x,c->y, 10, 0, 0, 30, EXPLODE|DIFFSIZE, NULL);
 				} else {
 					playChunk(2);
-				    	explosion_add(c->x,c->y+5,0,rand()%3+1);	
+				    	explosion_add(c->x,c->y+5,0,rand()%3+1);
 					//parsys_add(spimg, 2,2, c->x,c->y, 10, angle, 10, 50, EXPLODE|DIFFSIZE, NULL);
 					pd->score+=d->score;
 					sprintf(buffer,"%d",d->score);

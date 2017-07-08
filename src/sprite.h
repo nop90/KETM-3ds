@@ -10,6 +10,7 @@
 
 enum _priority {
 	PR_BACK0=0,
+	PR_GROUNDER,
 	PR_BACK1,
 	PR_BACK2,
 	PR_ENEMY,
@@ -45,6 +46,8 @@ enum SPRITE_TYPE {
 	SP_EN_CIR,
 	SP_EN_ZATAK,
 	SP_EN_BADGUY,
+	SP_EN_GROUNDER,
+	SP_EN_BGPANEL,
 	SP_EN_PROBALL,
 	SP_EN_PLASMABALL,
 	SP_EN_MING,
@@ -78,7 +81,7 @@ enum SPRITE_TYPE {
 #define SP_SHOW_MENUTEXT	0x2000
 #define SP_SHOW_ETC		0x4000
 #define SP_SHOW_ALL		0xff00
-			
+
 typedef struct _colmap_cache {
 	SDL_Surface *src;	/* Zeiger auf Quell-Src in Pixmap cache (nur fuer Index, *NO* free!) */
 	int frames;		/* Anzahl eintraege in dyn.Array **col */
@@ -86,7 +89,7 @@ typedef struct _colmap_cache {
 	Uint8 **col;		/* Dyn.Array mit Zeiger auf Colmaps */
 	struct _colmap_cache *next;
 } COLMAP_CACHE;
-		
+
 typedef struct _sprite {
 	int id;				/* Eindeutige Sprite-ID */
 	SDL_Surface *img;		/* Images */

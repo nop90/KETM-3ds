@@ -1,15 +1,27 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 extern SPRITE *player;
 
 typedef struct {
 	ENEMY_BASE b;
+	#ifdef GP2X
+	float angle;
+	float speed;
+	int state;
+	float wait;
+	int level;
+	#else
 	double angle;
 	double speed;
 	int state;
 	double wait;
 	int level;
+	#endif
 } ZATAK_DATA;
 
 void enemy_zatak_add(int lv)
@@ -31,7 +43,11 @@ void enemy_zatak_add(int lv)
 		data->b.health=1;
 		data->state=0;
 		data->wait=0;
+		#ifdef GP2X
+		data->speed=2.0*(((float)rand()/RAND_MAX)*2);
+		#else
 		data->speed=2.0*(((double)rand()/RAND_MAX)*2);
+		#endif
 		if(i<6) {
 			data->angle=10;
 			s->x=-s->w;

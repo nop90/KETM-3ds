@@ -1,15 +1,26 @@
 #include "enemy.h"
 
+#ifdef GP2X
+extern float fps_factor;
+#else
 extern double fps_factor;
+#endif
 
 /* not a real enemy - just a line of text */
 
 typedef struct {
 	int state;
+	#ifdef GP2X
+	float speed;
+	float destx;
+	float desty;
+	float wait;
+	#else
 	double speed;
 	double destx;
 	double desty;
 	double wait;
+	#endif
 } GAMETEXT_DATA;
 
 void enemy_gametext_add(char *text, int ypos)
@@ -38,26 +49,30 @@ void enemy_gametext_add(char *text, int ypos)
 void enemy_gametext_mover(SPRITE *s)
 {
 	GAMETEXT_DATA *g=(GAMETEXT_DATA *)s->data;
-	SDL_Surface *sur;
+	//SDL_Surface *sur;
 
 	switch(g->state) {
 	case 0:
 		s->x-=g->speed*fps_factor;
 		if(s->x<=g->destx) {
-			g->wait=50;
+			g->wait=40;
 			g->state=1;
 		}
 		break;
 	case 1:
 		g->wait-=fps_factor;
 		if(g->wait<=0) {
+			g->wait=20;
 			g->state=2;
 		}
 		break;
 	case 2:
-		//sur=sprite_getcurrimg(s);
-		//parsys_add(sur,s->w,1,s->x,s->y,20,0,0,100,LINESPLIT,NULL);
-		//SDL_FreeSurface(sur);
+		g->wait-=fps_factor;
+		s->alpha=55+g->wait*10;
+		if(g->wait<=0)
+			g->state=3;
+		break;
+	case 3:
 		s->type=-1;
 	}
 }
