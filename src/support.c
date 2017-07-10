@@ -132,10 +132,10 @@ void game_init(int argc, char *argv[])
 	font_init();
 	menusystem_init();
 	hsc_init();
+	hsc_load();
 	fps_init();
 	newstate(ST_START_INTRO,0,1);
 	initSound();
-
 }
 
 void toggle_fullscreen()

@@ -12,8 +12,10 @@ int lives;
 int volume=2; /* 0-3 */
 int difficulty=DIFF_EASY;
 
-char mods[20][20];
+char mods[5][20];
 int modcount=0;
+int selected=0;
+char tempstr[256];
 
 void wait(){
         int i,j;
@@ -52,7 +54,6 @@ void readModDirs( ) {
 
 void chooseModDir() {
 	int i;
-	int selected=0;
 	int done = 0;
     u32 keys;
 	memset(moddir,0,20);
@@ -110,11 +111,18 @@ int main(int argc, char *argv[])
     mkdir("/3ds", 0777);
     mkdir("/3ds/KETM", 0777);
 
-	 gfxInitDefault();
+	gfxInitDefault();
 	consoleInit(GFX_BOTTOM, NULL);
 	printf("Starting K.E.T.M.\n");
 
 	chooseModDir(); 
+	
+
+	
+	for(int i=0;i<modcount;i++){
+		sprintf(tempstr,"/3ds/KETM/%s",mods[i]);
+		mkdir(tempstr, 0777);
+	}
 	romfsInit();
 
 	game_init(argc, argv);
@@ -187,6 +195,7 @@ int main(int argc, char *argv[])
 
 	/* TODO: Free everything (memory, SDL_Surfaces, Joysticks...) */
 
+	hsc_save();
 	fprintf(stdout,"Thank you for playing\n");
 	romfsExit();
 	exit(0);

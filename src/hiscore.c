@@ -15,12 +15,15 @@ extern int keyboard[];
 extern KEYCONFIG keyconfig;
 extern double fps_factor;
 
+extern char mods[5][20];
+extern int selected;
+
 void hsc_init()
 {
 	int i;
 	for(i=0;i<5;i++) {
-		strcpy(hsc_table[i].name,"GP2X"); //..farox
-		hsc_table[i].score=(5-i)*10000;
+		strcpy(hsc_table[i].name,"3DS"); 
+		hsc_table[i].score=(5-i)*5000;
 	}
 }
 
@@ -28,10 +31,11 @@ void hsc_load()
 {
 	int i;
 	FILE *fp;
-	char fn[50];
+	char fn[256];
 	int tmpscore;
        strcpy(fn,"/3ds/KETM/");
-       strcat(fn,"highscore.txt");
+	   strcat(fn,mods[selected]);
+       strcat(fn,"/highscore.txt");
 
  	if ( NULL == (fp = fopen(fn,"r")) ) {
     		return;
@@ -48,11 +52,11 @@ void hsc_load()
 void hsc_save(){
  int i;
         FILE *fp;
-        char fn[50];
+        char fn[256];
         //int tmpscore;
         strcpy(fn,"/3ds/KETM/");
-       strcat(fn,"highscore.txt");
-
+	    strcat(fn,mods[selected]);
+        strcat(fn,"/highscore.txt");
         if ( NULL == (fp = fopen(fn,"w")) ) {
                 return;
         }
@@ -130,11 +134,7 @@ void hsc_show_work()
 {
 	int i;
 	HSC_DATA *d;
-	#ifdef GP2X
-	static float w;
-	#else
 	static double w;
-	#endif
 
 	if(state.mainstate!=ST_SHOW_HCLIST || state.newstate==1) return;
 
@@ -414,21 +414,13 @@ void hsc_entry_show()
 	int i;
 	SDL_Rect r,s;
 	SDL_Surface *e;
-	#ifdef GP2X
-	static float angle=0;
-	#else
 	static double angle=0;
-	#endif
 	int xa,ya;
 
 	SDL_BlitSurface(back,NULL,screen,NULL);
 
 	r.x=screen->w/2-headline->w/2;
-	#ifdef GP2X
-	r.y=20;
-	#else
 	r.y=40;
-	#endif
 	r.w=headline->w;
 	r.h=headline->h;
 	SDL_BlitSurface(headline,NULL,screen,&r);
@@ -469,11 +461,7 @@ void hsc_entry_show()
 	}
 
 	r.x=screen->w/2-plate->w/2;
-	#ifdef GP2X
-	r.y=235-plate->h; // farox
-	#else
-	r.y=260-plate->h;  //denis
-	#endif
+	r.y=235-plate->h; 
 	r.w=plate->w;
 	r.h=plate->h;
 	SDL_BlitSurface(plate,NULL,screen,&r);
